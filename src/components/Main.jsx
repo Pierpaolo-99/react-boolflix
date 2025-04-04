@@ -1,24 +1,11 @@
 import { useFetch } from "../context/FetchContext";
 import Flag from "react-world-flags";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
 import languageToCountryCode from '../mappings/languageToCountryCode'
+import Stars from "../stars/stars";
 
 export default function Main() {
 
     const { movies, isLoading, error } = useFetch();
-
-    function renderStars(vote) {
-        const fullStars = Math.ceil(vote);
-
-        return (
-            <>
-                {[...Array(fullStars)].map((_, i) => (
-                    <FontAwesomeIcon key={`full-${i}`} icon={faStar} className="text-warning" />
-                ))}
-            </>
-        );
-    }
 
     if (isLoading) {
         return <p>Caricamento...</p>;
@@ -57,9 +44,7 @@ export default function Main() {
                                             />
                                             {movie.original_language.toUpperCase()}
                                         </p>
-                                        <p className="card-text">
-                                            <strong>Voto:</strong> {renderStars(Math.floor(movie.vote_average / 2))}
-                                        </p>
+                                        <Stars vote={movie.vote_average} />
                                         <p className="card-text">
                                             <strong>Tipo:</strong> {movie.type === "movie" ? "Film" : "Serie TV"}
                                         </p>
