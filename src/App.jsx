@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Flag from "react-world-flags";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faStarHalfAlt, faStar as faStarEmpty } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 export default function App() {
 
@@ -92,6 +92,18 @@ export default function App() {
     fetchMoviesAndSeries();
   }, [findMovie]);
 
+  function renderStars(vote) {
+    const fullStars = Math.ceil(vote);
+
+    return (
+      <>
+        {[...Array(fullStars)].map((_, i) => (
+          <FontAwesomeIcon key={`full-${i}`} icon={faStar} className="text-warning" />
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       <header className="bg-dark text-white py-3">
@@ -141,7 +153,7 @@ export default function App() {
                       {movie.original_language.toUpperCase()}
                     </p>
                     <p className="card-text">
-                      <strong>Voto:</strong> {movie.vote_average.toFixed(1)}/10
+                      <strong>Voto:</strong> {renderStars(Math.floor(movie.vote_average / 2))}
                     </p>
                     <p className="card-text">
                       <strong>Tipo:</strong> {movie.type === "movie" ? "Film" : "Serie TV"}
