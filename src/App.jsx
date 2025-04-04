@@ -54,6 +54,30 @@ export default function App() {
           <button className="btn btn-outline-light">Login</button>
         </div>
       </header>
+
+      <main className="container my-4">
+        <div className="row">
+          {movies.map((movie) => (
+            <div className="col-md-3 mb-4" key={movie.id}>
+              <div className="card h-100">
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  className="card-img-top"
+                  alt={movie.title}
+                />
+                <div className="card-body">
+                  <h5 className="card-title">{movie.title}</h5>
+                  <p className="card-text">
+                    <strong>Titolo Originale:</strong> {movie.original_title} <br />
+                    <strong>Lingua:</strong> {movie.original_language.toUpperCase()} <br />
+                    <strong>Voto:</strong> {movie.vote_average.toFixed(1)}/10
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
     </>
   )
 }
