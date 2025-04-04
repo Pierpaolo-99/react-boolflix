@@ -25,14 +25,19 @@ export default function App() {
       .catch(err => console.error("Errore durante la fetch:", err));
   }
 
+  function handleSearchSubmit(e) {
+    e.preventDefault()
+
+    fetchData()
+  }
+
   return (
     <>
       <header className="bg-dark text-white py-3">
         <div className="container d-flex align-items-center justify-content-between">
-
           <h1 className="h3 mb-0">Boolflix</h1>
 
-          <div className="input-group w-50">
+          <form className="input-group w-50" onSubmit={handleSearchSubmit}>
             <input
               type="text"
               className="form-control"
@@ -41,10 +46,10 @@ export default function App() {
               value={findMovie}
               onChange={(e) => setFindMovie(e.target.value)}
             />
-            <button className="btn btn-primary" type="button" onClick={fetchData}>
+            <button className="btn btn-primary" type="submit">
               Cerca
             </button>
-          </div>
+          </form>
 
           <button className="btn btn-outline-light">Login</button>
         </div>
