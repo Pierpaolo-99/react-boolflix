@@ -13,7 +13,7 @@ export default function Main() {
     }
 
     return (
-        <main className="container my-4">
+        <main className="container my-4 main-content">
             <div className="row">
                 {movies.map(movie => (
                     <Card key={movie.id} movie={movie} />

@@ -1,19 +1,20 @@
 import Flag from "react-world-flags";
 import Stars from "../stars/Stars";
 import languageToCountryCode from "../mappings/languageToCountryCode";
+import "./Card.css";
 
 export default function Card({ movie }) {
     const countryCode = languageToCountryCode[movie.original_language] || "UN";
 
     return (
         <div className="col-md-3 mb-4">
-            <div className="card h-100">
+            <div className="card h-100 card-hover">
                 <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     className="card-img-top"
                     alt={movie.title}
                 />
-                <div className="card-body">
+                <div className="card-body card-info">
                     <h5 className="card-title">{movie.title}</h5>
                     <p className="card-text">
                         <strong>Titolo Originale:</strong> {movie.original_title}

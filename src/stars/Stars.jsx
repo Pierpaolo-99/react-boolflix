@@ -9,7 +9,7 @@ export default function Stars({ vote }) {
         return (
             <>
                 {[...Array(fullStars)].map((_, i) => (
-                    <FontAwesomeIcon key={`full-${i}`} icon={faStar} className="text-warning" />
+                    <FontAwesomeIcon key={i} icon={faStar} className="text-warning" />
                 ))}
             </>
         );
