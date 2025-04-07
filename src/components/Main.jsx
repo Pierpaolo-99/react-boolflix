@@ -3,7 +3,7 @@ import Card from "../card/Card";
 import { useState } from "react";
 
 export default function Main() {
-    const { movies, genres, isLoading, error, findMovie } = useFetch(); // Aggiunto findMovie
+    const { movies, genres, isLoading, error, findMovie } = useFetch();
     const [selectedGenre, setSelectedGenre] = useState("");
 
     const filteredMovies = selectedGenre
@@ -20,7 +20,7 @@ export default function Main() {
 
     return (
         <main className="container my-4 main-content">
-            {findMovie && ( // Mostra il select solo se findMovie non è vuoto
+            {findMovie && (
                 <div className="mb-3">
                     <label htmlFor="genre-select" className="form-label">
                         Filtra per genere:
