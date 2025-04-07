@@ -3,7 +3,7 @@ import Card from "../card/Card";
 import { useState } from "react";
 
 export default function Main() {
-    const { movies, genres, isLoading, error } = useFetch();
+    const { movies, genres, isLoading, error, findMovie } = useFetch(); // Aggiunto findMovie
     const [selectedGenre, setSelectedGenre] = useState("");
 
     const filteredMovies = selectedGenre
@@ -20,24 +20,26 @@ export default function Main() {
 
     return (
         <main className="container my-4 main-content">
-            <div className="mb-3">
-                <label htmlFor="genre-select" className="form-label">
-                    Filtra per genere:
-                </label>
-                <select
-                    id="genre-select"
-                    className="form-select"
-                    value={selectedGenre}
-                    onChange={(e) => setSelectedGenre(e.target.value)}
-                >
-                    <option value="">Tutti i generi</option>
-                    {genres.map(genre => (
-                        <option key={genre.id} value={genre.name}>
-                            {genre.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
+            {findMovie && ( // Mostra il select solo se findMovie non è vuoto
+                <div className="mb-3">
+                    <label htmlFor="genre-select" className="form-label">
+                        Filtra per genere:
+                    </label>
+                    <select
+                        id="genre-select"
+                        className="form-select"
+                        value={selectedGenre}
+                        onChange={(e) => setSelectedGenre(e.target.value)}
+                    >
+                        <option value="">Tutti i generi</option>
+                        {genres.map(genre => (
+                            <option key={genre.id} value={genre.name}>
+                                {genre.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
             <div className="row">
                 {filteredMovies.map(movie => (
                     <Card key={movie.id} movie={movie} />
