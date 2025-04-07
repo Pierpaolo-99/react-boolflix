@@ -4,6 +4,7 @@ const FetchContext = createContext();
 
 export function FetchProvider({ children }) {
     const [movies, setMovies] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [findMovie, setFindMovie] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -51,6 +52,7 @@ export function FetchProvider({ children }) {
                     map[genre.id] = genre.name;
                     return map;
                 }, {});
+                setGenres(genreData.genres);
 
                 const Movies = await Promise.all(
                     (movieData.results || []).map(async (movie) => {
@@ -119,6 +121,7 @@ export function FetchProvider({ children }) {
         <FetchContext.Provider
             value={{
                 movies,
+                genres,
                 findMovie,
                 setFindMovie,
                 isLoading,
