@@ -19,47 +19,73 @@ export function FetchProvider({ children }) {
         setIsLoading(true);
         setError(null);
 
-        const movieFetch = fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${findMovie}&language=it-IT`,
-            {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
-                }
+        const movieFetch = fetch(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${findMovie}&language=it-IT`, {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
             }
-        ).then((res) => res.json());
+        })
+            .then((res) => res.json());
 
-        const seriesFetch = fetch(`https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${findMovie}&language=it-IT`,
-            {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
-                }
+        const seriesFetch = fetch(`https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${findMovie}&language=it-IT`, {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
             }
-        ).then((res) => res.json());
+        })
+            .then((res) => res.json());
 
         Promise.all([movieFetch, seriesFetch])
-            .then(([movieData, seriesData]) => {
-                const Movies = (movieData.results || []).map((movie) => ({
-                    id: movie.id,
-                    title: movie.title,
-                    original_title: movie.original_title,
-                    original_language: movie.original_language,
-                    poster_path: movie.poster_path,
-                    vote_average: movie.vote_average,
-                    type: "movie",
-                }));
+            .then(async ([movieData, seriesData]) => {
+                const Movies = await Promise.all(
+                    (movieData.results || []).map(async (movie) => {
+                        const castResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${api_key}`, {
+                            method: 'GET',
+                            headers: {
+                                accept: 'application/json',
+                                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
+                            }
+                        });
+                        const castData = await castResponse.json();
+                        const cast = (castData.cast || []).slice(0, 5).map(actor => `${actor.name}`);
+                        return {
+                            id: movie.id,
+                            title: movie.title,
+                            original_title: movie.original_title,
+                            original_language: movie.original_language,
+                            poster_path: movie.poster_path,
+                            vote_average: movie.vote_average,
+                            type: "movie",
+                            cast,
+                        };
+                    })
+                );
 
-                const Series = (seriesData.results || []).map((series) => ({
-                    id: series.id,
-                    title: series.name,
-                    original_title: series.original_name,
-                    original_language: series.original_language,
-                    poster_path: series.poster_path,
-                    vote_average: series.vote_average,
-                    type: "tv",
-                }));
+                const Series = await Promise.all(
+                    (seriesData.results || []).map(async (series) => {
+                        const castResponse = await fetch(`https://api.themoviedb.org/3/tv/${series.id}/credits?api_key=${api_key}`, {
+                            method: 'GET',
+                            headers: {
+                                accept: 'application/json',
+                                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
+                            }
+                        });
+                        const castData = await castResponse.json();
+                        const cast = (castData.cast || []).slice(0, 5).map(actor => `${actor.name}`);
+                        return {
+                            id: series.id,
+                            title: series.name,
+                            original_title: series.original_name,
+                            original_language: series.original_language,
+                            poster_path: series.poster_path,
+                            vote_average: series.vote_average,
+                            type: "tv",
+                            cast,
+                        };
+                    })
+                );
 
                 setMovies([...Movies, ...Series]);
             })

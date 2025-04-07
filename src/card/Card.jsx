@@ -31,6 +31,12 @@ export default function Card({ movie }) {
                     <p className="card-text">
                         <strong>Tipo:</strong> {movie.type === "movie" ? "Film" : "Serie TV"}
                     </p>
+                    <p className="card-text">
+                        <strong>Descrizione:</strong>
+                    </p>
+                    <p>
+                        <strong>Cast:</strong> {movie.cast.join(", ")}
+                    </p>
                 </div>
             </div>
         </div>
