@@ -39,6 +39,19 @@ export function FetchProvider({ children }) {
 
         Promise.all([movieFetch, seriesFetch])
             .then(async ([movieData, seriesData]) => {
+                const genreResponse = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}&language=it-IT`, {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNjZlYTIwMTgyZjNlZTViMDk3M2YzOTdjYTZiZGIyMCIsIm5iZiI6MTc0Mzc1NTg3MS4yNTUsInN1YiI6IjY3ZWY5YTVmZWRlOGQ4MmYzYmFkMTEwZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V-V8nK3SDho9kkjdmq-uQ_omnBaq1mhHG7CB2QPG1Vc'
+                    }
+                });
+                const genreData = await genreResponse.json();
+                const genreMap = (genreData.genres || []).reduce((map, genre) => {
+                    map[genre.id] = genre.name;
+                    return map;
+                }, {});
+
                 const Movies = await Promise.all(
                     (movieData.results || []).map(async (movie) => {
                         const castResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${api_key}`, {
@@ -50,6 +63,7 @@ export function FetchProvider({ children }) {
                         });
                         const castData = await castResponse.json();
                         const cast = (castData.cast || []).slice(0, 5).map(actor => `${actor.name}`);
+                        const genres = (movie.genre_ids || []).map(id => genreMap[id] || "Unknown");
                         return {
                             id: movie.id,
                             title: movie.title,
@@ -57,8 +71,10 @@ export function FetchProvider({ children }) {
                             original_language: movie.original_language,
                             poster_path: movie.poster_path,
                             vote_average: movie.vote_average,
+                            overview: movie.overview,
                             type: "movie",
                             cast,
+                            genres,
                         };
                     })
                 );
@@ -74,6 +90,7 @@ export function FetchProvider({ children }) {
                         });
                         const castData = await castResponse.json();
                         const cast = (castData.cast || []).slice(0, 5).map(actor => `${actor.name}`);
+                        const genres = (series.genre_ids || []).map(id => genreMap[id] || "Unknown");
                         return {
                             id: series.id,
                             title: series.name,
@@ -83,6 +100,7 @@ export function FetchProvider({ children }) {
                             vote_average: series.vote_average,
                             type: "tv",
                             cast,
+                            genres,
                         };
                     })
                 );

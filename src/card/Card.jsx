@@ -15,7 +15,7 @@ export default function Card({ movie }) {
                     alt={movie.title}
                 />
                 <div className="card-body card-info">
-                    <h5 className="card-title">{movie.title}</h5>
+                    <h4 className="card-title">{movie.title}</h4>
                     <p className="card-text">
                         <strong>Titolo Originale:</strong> {movie.original_title}
                     </p>
@@ -31,11 +31,14 @@ export default function Card({ movie }) {
                     <p className="card-text">
                         <strong>Tipo:</strong> {movie.type === "movie" ? "Film" : "Serie TV"}
                     </p>
-                    <p className="card-text">
-                        <strong>Descrizione:</strong>
-                    </p>
                     <p>
                         <strong>Cast:</strong> {movie.cast.join(", ")}
+                    </p>
+                    <p>
+                        <strong>Genere:</strong> {movie.genres.join(", ")}
+                    </p>
+                    <p className="card-text">
+                        <strong>Descrizione:</strong> {movie.overview}
                     </p>
                 </div>
             </div>

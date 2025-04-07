@@ -1,6 +1,7 @@
 .card-hover {
     position: relative;
     overflow: hidden;
+    height: 300px;
 }
 
 .card-info {
@@ -13,11 +14,15 @@
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     opacity: 0;
     transition: opacity 0.3s ease;
     cursor: pointer;
+    overflow-y: scroll;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .card-hover:hover .card-info {
